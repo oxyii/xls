@@ -589,14 +589,14 @@ func (xls *XLS) readSheet() {
 
 	// offset: 6; size: var; sheet name
 	var recName string
-	recName = string(recordData[6:])
-	/*
-		if xls.version == XLS_BIFF8 {
-			recName = readUnicodeStringShort(recordData[6:])
-		} else if xls.version == XLS_BIFF7 {
-			recName = readByteStringShort(recordData[6:])
-		}
-	*/
+
+	if xls.version == XLS_BIFF8 {
+		stringData := xls.readUnicodeStringShort(recordData[6:])
+		recName = stringData.value
+	} else if xls.version == XLS_BIFF7 {
+		stringData := xls.readByteStringShort(recordData[6:])
+		recName = stringData.value
+	}
 
 	xls.sheets = append(xls.sheets, &Sheet{
 		offset:     recOffset,
